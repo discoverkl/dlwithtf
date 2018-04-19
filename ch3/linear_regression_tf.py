@@ -24,8 +24,7 @@ b_true = 2
 noise_scale = .1
 x_np = np.random.rand(N, 1)
 noise = np.random.normal(scale=noise_scale, size=(N, 1))
-# Convert shape of y_np to (N,)
-y_np = np.reshape(w_true * x_np  + b_true + noise, (-1))
+y_np = w_true * x_np + b_true + noise
 
 # Save image of the data distribution
 plt.scatter(x_np, y_np)
@@ -39,7 +38,7 @@ plt.savefig("lr_data.png")
 # Generate tensorflow graph
 with tf.name_scope("placeholders"):
   x = tf.placeholder(tf.float32, (N, 1))
-  y = tf.placeholder(tf.float32, (N,))
+  y = tf.placeholder(tf.float32, (N, 1))
 with tf.name_scope("weights"):
   W = tf.Variable(tf.random_normal((1, 1)))
   b = tf.Variable(tf.random_normal((1,)))
@@ -72,7 +71,7 @@ with tf.Session() as sess:
   # Make Predictions
   y_pred_np = sess.run(y_pred, feed_dict={x: x_np})
 
-y_pred_np = np.reshape(y_pred_np, -1)
+#y_pred_np = np.reshape(y_pred_np, -1)
 r2 = pearson_r2_score(y_np, y_pred_np)
 print("Pearson R^2: %f" % r2)
 rms = rms_score(y_np, y_pred_np)
